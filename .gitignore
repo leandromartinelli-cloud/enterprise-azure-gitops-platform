@@ -1,0 +1,97 @@
+# ============================================
+# Terraform
+# ============================================
+
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log
+
+*.tfplan
+tfplan
+
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+.terraformrc
+terraform.rc
+
+# Terraform variable files may contain secrets
+*.tfvars
+*.tfvars.json
+
+# Keep example variable files
+!*.tfvars.example
+
+# ============================================
+# Environment / Secrets
+# ============================================
+
+.env
+.env.*
+!.env.example
+
+*.pem
+*.key
+*.pfx
+*.p12
+
+secrets/
+credentials/
+
+# ============================================
+# Kubernetes
+# ============================================
+
+*.kubeconfig
+kubeconfig
+
+# ============================================
+# Application / Node
+# ============================================
+
+node_modules/
+dist/
+build/
+coverage/
+
+# ============================================
+# Python
+# ============================================
+
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# ============================================
+# IDE
+# ============================================
+
+.vscode/
+.idea/
+
+# ============================================
+# Operating System
+# ============================================
+
+.DS_Store
+Thumbs.db
+
+# ============================================
+# Logs / Temporary Files
+# ============================================
+
+*.log
+*.tmp
+*.temp
+
+# ============================================
+# Local test artifacts
+# ============================================
+
+.local/
+tmp/
