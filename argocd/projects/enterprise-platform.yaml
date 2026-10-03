@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: enterprise-platform
+  namespace: argocd
+spec:
+  description: Enterprise GitOps Platform workloads
+
+  sourceRepos:
+    - https://github.com/leandromartinelli-cloud/enterprise-azure-gitops-platform.git
+
+  destinations:
+    - namespace: '*'
+      server: https://kubernetes.default.svc
+
+  clusterResourceWhitelist:
+    - group: ''
+      kind: Namespace
+
+  namespaceResourceWhitelist:
+    - group: '*'
+      kind: '*'
