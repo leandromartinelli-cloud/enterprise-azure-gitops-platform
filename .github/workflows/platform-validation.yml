@@ -5,7 +5,6 @@ on:
 
 permissions:
   contents: read
-  id-token: write
 
 jobs:
   validate:
@@ -21,12 +20,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Azure login
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      - name: Azure login with managed identity
+        run: |
+          az login --identity --output none
+          az account set --subscription "ecfc68ac-997b-48cc-981a-4ed575ae99ec"
+          echo "Managed Identity authentication successful."
 
       - name: Get AKS credentials
         run: |
