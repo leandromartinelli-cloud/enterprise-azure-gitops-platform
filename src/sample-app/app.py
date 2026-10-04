@@ -26,6 +26,7 @@ def index():
             status="ok",
             message=secret.value,
             authentication="Azure Workload Identity",
+            version="v2",
         )
     except Exception as exc:
         app.logger.exception("Failed to retrieve secret from Key Vault")
