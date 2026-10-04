@@ -27,3 +27,8 @@ variable "cost_center" {
   type        = string
   default     = "lab"
 }
+
+variable "github_runner_ssh_public_key" {
+  description = "SSH public key used by the GitHub Actions runner VM."
+  type        = string
+}

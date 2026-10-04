@@ -24,6 +24,7 @@ env:
   ARM_USE_MSI: "true"
   ARM_SUBSCRIPTION_ID: ecfc68ac-997b-48cc-981a-4ed575ae99ec
   ARM_TENANT_ID: a81ec228-aa22-45b4-9c9b-59c24b660ee2
+  TF_VAR_github_runner_ssh_public_key: ${{ secrets.GITHUB_RUNNER_SSH_PUBLIC_KEY }}
 
 jobs:
   terraform:
