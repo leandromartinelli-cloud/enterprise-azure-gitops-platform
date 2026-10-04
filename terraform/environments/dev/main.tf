@@ -119,6 +119,10 @@ module "aks" {
 
   node_resource_group_name = local.aks_node_resource_group_name
 
+  depends_on = [
+    module.monitoring
+  ]
+
   tags = local.common_tags
 }
 
