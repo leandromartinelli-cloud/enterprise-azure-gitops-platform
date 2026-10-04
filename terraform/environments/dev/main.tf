@@ -192,3 +192,9 @@ resource "azurerm_role_assignment" "github_runner_aks_cluster_admin" {
   role_definition_name = "Azure Kubernetes Service Cluster Admin Role"
   principal_id         = module.github_runner.principal_id
 }
+
+resource "azurerm_role_assignment" "github_runner_aks_rbac_cluster_admin" {
+  scope                = module.aks.cluster_id
+  role_definition_name = "Azure Kubernetes Service RBAC Cluster Admin"
+  principal_id         = module.github_runner.principal_id
+}
