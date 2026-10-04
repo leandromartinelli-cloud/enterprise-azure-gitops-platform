@@ -18,7 +18,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 env:
   ACR_NAME: acrentgitopsdev29xa5r
@@ -66,3 +66,37 @@ jobs:
         run: |
           docker push \
             "$ACR_LOGIN_SERVER/$IMAGE_NAME:${{ steps.image.outputs.tag }}"
+
+      - name: Update GitOps image tag
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        shell: bash
+        run: |
+          IMAGE_TAG="${{ steps.image.outputs.tag }}"
+          KUSTOMIZATION="apps/sample-app/overlays/dev/kustomization.yaml"
+
+          echo "Updating GitOps image tag to: $IMAGE_TAG"
+
+          sed -i \
+            "s/newTag: .*/newTag: $IMAGE_TAG/" \
+            "$KUSTOMIZATION"
+
+          echo "Updated kustomization:"
+          grep -A2 "images:" "$KUSTOMIZATION"
+
+      - name: Commit GitOps image update
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        shell: bash
+        run: |
+          IMAGE_TAG="${{ steps.image.outputs.tag }}"
+
+          if git diff --quiet -- apps/sample-app/overlays/dev/kustomization.yaml; then
+            echo "GitOps image tag is already up to date."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add apps/sample-app/overlays/dev/kustomization.yaml
+          git commit -m "chore(gitops): deploy sample-app $IMAGE_TAG"
+          git push origin HEAD:main
