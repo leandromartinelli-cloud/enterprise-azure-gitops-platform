@@ -5,6 +5,7 @@ locals {
   private_endpoint_subnet_name = "snet-private-endpoints"
   ci_runner_subnet_name        = "snet-ci-runners"
   log_analytics_workspace_name = "log-${var.project_name}-${var.environment}-${var.location}"
+  github_runner_name           = "vm-ghrunner-${var.environment}-${var.location}"
 
   acr_name                        = "acrentgitopsdev${random_string.unique.result}"
   key_vault_name                  = "kv-entgitops-dev-${random_string.unique.result}"

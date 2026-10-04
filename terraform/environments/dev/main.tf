@@ -157,3 +157,26 @@ module "sample_app_workload_identity" {
 
   tags = local.common_tags
 }
+
+module "github_runner" {
+  source = "../../modules/github-runner"
+
+  name                = local.github_runner_name
+  location            = var.location
+  resource_group_name = azurerm_resource_group.platform.name
+
+  subnet_id = module.networking.ci_runner_subnet_id
+
+  vm_size        = "Standard_D2as_v4"
+  admin_username = "azureuser"
+
+  ssh_public_key = file("~/.ssh/github-runner-azure.pub")
+
+  tags = local.common_tags
+}
+
+resource "azurerm_role_assignment" "github_runner_acr_push" {
+  scope                = module.acr.registry_id
+  role_definition_name = "AcrPush"
+  principal_id         = module.github_runner.principal_id
+}
