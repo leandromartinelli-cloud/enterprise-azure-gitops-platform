@@ -16,9 +16,14 @@ spec:
       serviceAccountName: sample-app
       containers:
         - name: sample-app
-          image: acrentgitopsdev29xa5r.azurecr.io/sample-app/nginx:1.29-alpine
+          image: acrentgitopsdev29xa5r.azurecr.io/sample-app
           ports:
-            - containerPort: 80
+            - containerPort: 8080
+          env:
+            - name: KEY_VAULT_URL
+              value: "https://kv-entgitops-dev-29xa5r.vault.azure.net/"
+            - name: SECRET_NAME
+              value: "sample-app-message"
           resources:
             requests:
               cpu: 10m
