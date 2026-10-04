@@ -19,4 +19,4 @@ patches:
 
 images:
   - name: acrentgitopsdev29xa5r.azurecr.io/sample-app
-    newTag: 3674e6531ad3
+    newTag: 48663102cf4f
