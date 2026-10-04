@@ -16,3 +16,7 @@ patches:
         path: /metadata/annotations
         value:
           azure.workload.identity/client-id: "8948b5e9-729e-4afe-99f6-50c94cdeb293"
+
+images:
+  - name: acrentgitopsdev29xa5r.azurecr.io/sample-app
+    newTag: e2dd97e349dc
