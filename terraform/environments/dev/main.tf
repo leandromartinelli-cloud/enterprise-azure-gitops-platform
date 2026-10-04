@@ -29,6 +29,9 @@ module "networking" {
   private_endpoint_subnet_name     = local.private_endpoint_subnet_name
   private_endpoint_subnet_prefixes = ["10.20.4.0/24"]
 
+  ci_runner_subnet_name     = local.ci_runner_subnet_name
+  ci_runner_subnet_prefixes = ["10.20.5.0/24"]
+
   tags = local.common_tags
 }
 
