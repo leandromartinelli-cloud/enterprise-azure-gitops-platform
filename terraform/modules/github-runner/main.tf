@@ -94,6 +94,12 @@ resource "azurerm_linux_virtual_machine" "this" {
   EOF
   )
 
+  lifecycle {
+    ignore_changes = [
+      custom_data
+    ]
+  }
+
   identity {
     type = "SystemAssigned"
   }
