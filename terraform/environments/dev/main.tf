@@ -137,3 +137,20 @@ resource "azurerm_role_assignment" "aks_acr_pull" {
   role_definition_name = "AcrPull"
   principal_id         = module.aks.kubelet_identity_object_id
 }
+
+module "sample_app_workload_identity" {
+  source = "../../modules/workload-identity"
+
+  name                = local.workload_identity_name
+  location            = var.location
+  resource_group_name = azurerm_resource_group.platform.name
+
+  oidc_issuer_url = module.aks.oidc_issuer_url
+
+  kubernetes_namespace       = "sample-app-dev"
+  kubernetes_service_account = "sample-app"
+
+  key_vault_id = module.key_vault.key_vault_id
+
+  tags = local.common_tags
+}
