@@ -180,3 +180,15 @@ resource "azurerm_role_assignment" "github_runner_acr_push" {
   role_definition_name = "AcrPush"
   principal_id         = module.github_runner.principal_id
 }
+
+resource "azurerm_role_assignment" "github_runner_aks_cluster_user" {
+  scope                = module.aks.cluster_id
+  role_definition_name = "Azure Kubernetes Service Cluster User Role"
+  principal_id         = module.github_runner.principal_id
+}
+
+resource "azurerm_role_assignment" "github_runner_aks_cluster_admin" {
+  scope                = module.aks.cluster_id
+  role_definition_name = "Azure Kubernetes Service Cluster Admin Role"
+  principal_id         = module.github_runner.principal_id
+}
