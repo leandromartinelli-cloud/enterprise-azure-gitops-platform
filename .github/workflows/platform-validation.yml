@@ -26,6 +26,11 @@ jobs:
           az account set --subscription "ecfc68ac-997b-48cc-981a-4ed575ae99ec"
           echo "Managed Identity authentication successful."
 
+      - name: Install kubectl
+        run: |
+          az aks install-cli
+          kubectl version --client
+
       - name: Get AKS credentials
         run: |
           az aks get-credentials \
