@@ -9,6 +9,7 @@ locals {
   key_vault_name                  = "kv-entgitops-dev-${random_string.unique.result}"
   acr_private_endpoint_name       = "pep-${local.acr_name}"
   key_vault_private_endpoint_name = "pep-${local.key_vault_name}"
+  workload_identity_name          = "id-sample-app-${var.environment}-${var.location}"
 
   aks_name                     = "aks-${var.project_name}-${var.environment}-${var.location}"
   aks_admin_object_id          = "e8e0f801-82be-406d-b95f-01061783ce0e"
