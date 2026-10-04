@@ -23,6 +23,15 @@ spec:
         - name: sample-app
           image: acrentgitopsdev29xa5r.azurecr.io/sample-app
 
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            capabilities:
+              drop:
+                - ALL
+            seccompProfile:
+              type: RuntimeDefault
+
           ports:
             - containerPort: 8080
 
