@@ -1,0 +1,85 @@
+name: Terraform CI
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "terraform/**"
+      - ".github/workflows/terraform-ci.yml"
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: terraform-dev-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  TF_IN_AUTOMATION: "true"
+  TF_INPUT: "false"
+  TF_WORKING_DIR: terraform/environments/dev
+  ARM_USE_MSI: "true"
+  ARM_SUBSCRIPTION_ID: ecfc68ac-997b-48cc-981a-4ed575ae99ec
+  ARM_TENANT_ID: a81ec228-aa22-45b4-9c9b-59c24b660ee2
+
+jobs:
+  terraform:
+    name: Terraform Validate and Plan
+
+    runs-on:
+      - self-hosted
+      - linux
+      - azure
+      - private
+
+    defaults:
+      run:
+        shell: bash
+        working-directory: ${{ env.TF_WORKING_DIR }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Azure login with managed identity
+        working-directory: .
+        run: |
+          az login --identity --output none
+          az account set --subscription "$ARM_SUBSCRIPTION_ID"
+          echo "Managed Identity authentication successful."
+
+      - name: Install Terraform
+        working-directory: .
+        run: |
+          TERRAFORM_VERSION="1.16.0"
+
+          curl -fsSLo /tmp/terraform.zip \
+            "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip"
+
+          unzip -o /tmp/terraform.zip -d /tmp/terraform-bin
+
+          sudo install \
+            -m 0755 \
+            /tmp/terraform-bin/terraform \
+            /usr/local/bin/terraform
+
+          terraform version
+
+      - name: Terraform format check
+        run: terraform fmt -check -recursive
+
+      - name: Terraform init
+        run: terraform init -input=false
+
+      - name: Terraform validate
+        run: terraform validate
+
+      - name: Terraform plan
+        run: |
+          terraform plan \
+            -input=false \
+            -lock-timeout=60s \
+            -no-color
