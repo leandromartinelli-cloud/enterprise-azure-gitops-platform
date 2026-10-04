@@ -9,6 +9,7 @@ permissions:
 jobs:
   validate:
     name: Validate Private AKS Platform
+
     runs-on:
       - self-hosted
       - Linux
@@ -26,7 +27,7 @@ jobs:
           az account set --subscription "ecfc68ac-997b-48cc-981a-4ed575ae99ec"
           echo "Managed Identity authentication successful."
 
-      - name: Install kubectl
+      - name: Install Kubernetes CLI tools
         run: |
           KUBECTL_VERSION="$(curl -L -s https://dl.k8s.io/release/stable.txt)"
 
@@ -40,6 +41,21 @@ jobs:
             /usr/local/bin/kubectl
 
           kubectl version --client
+
+          KUBELOGIN_VERSION="v0.2.12"
+
+          curl -L \
+            "https://github.com/Azure/kubelogin/releases/download/${KUBELOGIN_VERSION}/kubelogin-linux-amd64.zip" \
+            -o /tmp/kubelogin.zip
+
+          unzip -o /tmp/kubelogin.zip -d /tmp/kubelogin
+
+          sudo install \
+            -m 0755 \
+            /tmp/kubelogin/bin/linux_amd64/kubelogin \
+            /usr/local/bin/kubelogin
+
+          kubelogin --version
 
       - name: Get AKS credentials
         run: |
