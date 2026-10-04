@@ -11,7 +11,9 @@ spec:
     metadata:
       labels:
         app: sample-app
+        azure.workload.identity/use: "true"
     spec:
+      serviceAccountName: sample-app
       containers:
         - name: sample-app
           image: acrentgitopsdev29xa5r.azurecr.io/sample-app/nginx:1.29-alpine
