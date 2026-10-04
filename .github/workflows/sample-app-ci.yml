@@ -1,0 +1,68 @@
+name: Sample App CI
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "src/sample-app/**"
+      - ".github/workflows/sample-app-ci.yml"
+
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "src/sample-app/**"
+      - ".github/workflows/sample-app-ci.yml"
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  ACR_NAME: acrentgitopsdev29xa5r
+  ACR_LOGIN_SERVER: acrentgitopsdev29xa5r.azurecr.io
+  IMAGE_NAME: sample-app
+
+jobs:
+  build:
+    name: Build and Push Sample App
+    runs-on:
+      - self-hosted
+      - linux
+      - azure
+      - private
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Azure login with managed identity
+        run: |
+          az login --identity --output none
+          echo "Azure managed identity authentication successful."
+
+      - name: Login to private ACR
+        run: |
+          az acr login --name "$ACR_NAME"
+
+      - name: Generate image tag
+        id: image
+        shell: bash
+        run: |
+          IMAGE_TAG="${GITHUB_SHA::12}"
+          echo "tag=$IMAGE_TAG" >> "$GITHUB_OUTPUT"
+          echo "Image tag: $IMAGE_TAG"
+
+      - name: Build Docker image
+        run: |
+          docker build \
+            --tag "$ACR_LOGIN_SERVER/$IMAGE_NAME:${{ steps.image.outputs.tag }}" \
+            ./src/sample-app
+
+      - name: Push Docker image
+        if: github.event_name != 'pull_request'
+        run: |
+          docker push \
+            "$ACR_LOGIN_SERVER/$IMAGE_NAME:${{ steps.image.outputs.tag }}"
