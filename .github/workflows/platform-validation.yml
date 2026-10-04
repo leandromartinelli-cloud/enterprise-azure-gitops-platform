@@ -28,7 +28,17 @@ jobs:
 
       - name: Install kubectl
         run: |
-          az aks install-cli
+          KUBECTL_VERSION="$(curl -L -s https://dl.k8s.io/release/stable.txt)"
+
+          curl -L \
+            "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl" \
+            -o /tmp/kubectl
+
+          sudo install \
+            -m 0755 \
+            /tmp/kubectl \
+            /usr/local/bin/kubectl
+
           kubectl version --client
 
       - name: Get AKS credentials
