@@ -29,7 +29,14 @@ resource "azurerm_kubernetes_cluster" "this" {
     os_disk_size_gb = 64
 
     only_critical_addons_enabled = false
+
+    upgrade_settings {
+      max_surge                     = "10%"
+      drain_timeout_in_minutes      = 0
+      node_soak_duration_in_minutes = 0
+    }
   }
+
 
   identity {
     type = "SystemAssigned"
