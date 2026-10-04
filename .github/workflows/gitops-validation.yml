@@ -1,0 +1,63 @@
+name: GitOps Manifest Validation
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "apps/**"
+      - "argocd/**"
+      - ".github/workflows/gitops-validation.yml"
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate Kubernetes Manifests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Show kubectl version
+        run: kubectl version --client
+
+      - name: Validate sample-app dev overlay
+        run: |
+          kubectl kustomize apps/sample-app/overlays/dev \
+            > /tmp/sample-app-dev.yaml
+
+          test -s /tmp/sample-app-dev.yaml
+
+          echo "sample-app dev overlay rendered successfully."
+
+      - name: Validate Argo CD bootstrap
+        run: |
+          kubectl kustomize argocd/bootstrap \
+            > /tmp/argocd-bootstrap.yaml
+
+          test -s /tmp/argocd-bootstrap.yaml
+
+          echo "Argo CD bootstrap rendered successfully."
+
+      - name: Validate Argo CD platform
+        run: |
+          kubectl kustomize argocd/platform \
+            > /tmp/argocd-platform.yaml
+
+          test -s /tmp/argocd-platform.yaml
+
+          echo "Argo CD platform rendered successfully."
+
+      - name: Validation summary
+        run: |
+          echo "GitOps manifest validation completed successfully."
+          echo ""
+          echo "Validated:"
+          echo "- apps/sample-app/overlays/dev"
+          echo "- argocd/bootstrap"
+          echo "- argocd/platform"
