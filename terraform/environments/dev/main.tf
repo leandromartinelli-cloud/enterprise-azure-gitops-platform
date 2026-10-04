@@ -170,7 +170,7 @@ module "github_runner" {
   vm_size        = "Standard_D2as_v4"
   admin_username = "azureuser"
 
-  ssh_public_key = file("~/.ssh/github-runner-azure.pub")
+  ssh_public_key = var.github_runner_ssh_public_key
 
   tags = local.common_tags
 }
