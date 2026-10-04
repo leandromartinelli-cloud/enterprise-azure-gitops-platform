@@ -43,3 +43,13 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "ci_runner_subnet_name" {
+  description = "Name of the subnet used by private CI runners."
+  type        = string
+}
+
+variable "ci_runner_subnet_prefixes" {
+  description = "Address prefixes for the private CI runner subnet."
+  type        = list(string)
+}
