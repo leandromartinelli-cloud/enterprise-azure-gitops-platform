@@ -2,28 +2,60 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: sample-app
+
 spec:
   replicas: 1
+
   selector:
     matchLabels:
       app: sample-app
+
   template:
     metadata:
       labels:
         app: sample-app
         azure.workload.identity/use: "true"
+
     spec:
       serviceAccountName: sample-app
+
       containers:
         - name: sample-app
           image: acrentgitopsdev29xa5r.azurecr.io/sample-app
+
           ports:
             - containerPort: 8080
+
+          startupProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            periodSeconds: 2
+            timeoutSeconds: 2
+            failureThreshold: 30
+
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            periodSeconds: 5
+            timeoutSeconds: 2
+            failureThreshold: 3
+
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            periodSeconds: 10
+            timeoutSeconds: 2
+            failureThreshold: 3
+
           env:
             - name: KEY_VAULT_URL
               value: "https://kv-entgitops-dev-29xa5r.vault.azure.net/"
             - name: SECRET_NAME
               value: "sample-app-message"
+
           resources:
             requests:
               cpu: 50m
